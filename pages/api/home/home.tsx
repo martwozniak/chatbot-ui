@@ -47,19 +47,21 @@ interface Props {
   serverSideApiKeyIsSet: boolean;
   serverSidePluginKeysSet: boolean;
   defaultModelId: OpenAIModelID;
+  isLoginRequired: boolean;
+
 }
 
 const Home = ({
   serverSideApiKeyIsSet,
   serverSidePluginKeysSet,
   defaultModelId,
+  isLoginRequired
 }: Props) => {
   const { t } = useTranslation('chat');
   const { getModels } = useApiService();
   const { getModelsError } = useErrorService();
   const [initialRender, setInitialRender] = useState<boolean>(true);
   const { data: session } = useSession()
-  const isLoginRequired : Boolean = Number(process.env.NEXT_PUBLIC_LOGIN_REQUIRED) === 1 ? true : false;
 
   const contextValue = useCreateReducer<HomeInitialState>({
     initialState,
@@ -84,6 +86,14 @@ const Home = ({
     ['GetModels', apiKey, serverSideApiKeyIsSet],
     ({ signal }) => {
       if (!apiKey && !serverSideApiKeyIsSet) return null;
+      
+      if(isLoginRequired){
+        console.log(data, session?.user?.email);
+      }
+      else 
+      {
+        console.log(data);
+      }
 
       return getModels(
         {
@@ -350,7 +360,6 @@ const Home = ({
     serverSideApiKeyIsSet,
     serverSidePluginKeysSet,
   ]);
-  console.log(isLoginRequired)
   if(!session && isLoginRequired) {return <LoginPage/>}
 
   return (
@@ -414,6 +423,7 @@ export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
 
   const googleApiKey = process.env.GOOGLE_API_KEY;
   const googleCSEId = process.env.GOOGLE_CSE_ID;
+  const isLoginRequired : Boolean = Number(process.env.NEXT_PUBLIC_LOGIN_REQUIRED) === 1 ? true : false;
 
   if (googleApiKey && googleCSEId) {
     serverSidePluginKeysSet = true;
@@ -424,6 +434,7 @@ export const getServerSideProps: GetServerSideProps = async ({ locale }) => {
       serverSideApiKeyIsSet: !!process.env.OPENAI_API_KEY,
       defaultModelId,
       serverSidePluginKeysSet,
+      isLoginRequired,
       ...(await serverSideTranslations(locale ?? 'en', [
         'common',
         'chat',
