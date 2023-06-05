@@ -4,6 +4,9 @@ const { i18n } = require('./next-i18next.config');
 const nextConfig = {
   i18n,
   reactStrictMode: true,
+  env: {
+    NEXT_PUBLIC_LOGIN_REQUIRED: process.env.NEXT_PUBLIC_LOGIN_REQUIRED,
+  },
 
   webpack(config, { isServer, dev }) {
     config.experiments = {
