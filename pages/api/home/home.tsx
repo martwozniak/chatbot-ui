@@ -59,6 +59,7 @@ const Home = ({
   const { getModelsError } = useErrorService();
   const [initialRender, setInitialRender] = useState<boolean>(true);
   const { data: session } = useSession()
+  const isLoginRequired : Boolean = Number(process.env.NEXT_PUBLIC_LOGIN_REQUIRED) === 1 ? true : false;
 
   const contextValue = useCreateReducer<HomeInitialState>({
     initialState,
@@ -349,8 +350,8 @@ const Home = ({
     serverSideApiKeyIsSet,
     serverSidePluginKeysSet,
   ]);
-
-  if(!session) {return <LoginPage/>}
+  console.log(isLoginRequired)
+  if(!session && isLoginRequired) {return <LoginPage/>}
 
   return (
     <HomeContext.Provider
