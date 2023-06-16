@@ -1,4 +1,4 @@
-import { IconFileExport, IconSettings } from '@tabler/icons-react';
+import { IconFileExport, IconSettings, IconBuildingStore } from '@tabler/icons-react';
 import { useContext, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
@@ -48,6 +48,12 @@ export const ChatbarSettings = () => {
         text={t('Export data')}
         icon={<IconFileExport size={18} />}
         onClick={() => handleExportData()}
+      />
+      
+      <SidebarButton
+        text={t('Marketplace')}
+        icon={<IconBuildingStore size={18} />}
+        onClick={() => setIsSettingDialog(true)}
       />
 
       <SidebarButton
