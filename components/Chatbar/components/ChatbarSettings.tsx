@@ -13,10 +13,12 @@ import { SidebarButton } from '../../Sidebar/SidebarButton';
 import ChatbarContext from '../Chatbar.context';
 import { ClearConversations } from './ClearConversations';
 import { PluginKeys } from './PluginKeys';
+import { MarketplaceDialog } from '@/components/Settings/MarketplaceDialog';
 
 export const ChatbarSettings = () => {
   const { t } = useTranslation('sidebar');
   const [isSettingDialogOpen, setIsSettingDialog] = useState<boolean>(false);
+  const [isMarketplaceDialogOpen, setIsMarketplaceDialogOpen] = useState<boolean>(false);
 
   const {
     state: {
@@ -53,7 +55,7 @@ export const ChatbarSettings = () => {
       <SidebarButton
         text={t('Marketplace')}
         icon={<IconBuildingStore size={18} />}
-        onClick={() => setIsSettingDialog(true)}
+        onClick={() => setIsMarketplaceDialogOpen(true)}
       />
 
       <SidebarButton
@@ -74,6 +76,13 @@ export const ChatbarSettings = () => {
           setIsSettingDialog(false);
         }}
       />
+
+      <MarketplaceDialog
+        open={isMarketplaceDialogOpen}
+        onClose={()=> {
+        setIsMarketplaceDialogOpen(false);
+      }} />
+      
     </div>
   );
 };
