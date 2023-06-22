@@ -5,7 +5,7 @@ import {
   IconPlayerStop,
   IconRepeat,
   IconSend,
-  IconAlbum,
+  IconBookmarks,
 } from '@tabler/icons-react';
 import {
   KeyboardEvent,
@@ -347,7 +347,7 @@ export const ChatInput = ({
             className="absolute right-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
             onClick={handleSave}
           >
-              <IconAlbum size={18} />
+              <IconBookmarks size={18} />
           </button>
           <button
             className="absolute right-8 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
