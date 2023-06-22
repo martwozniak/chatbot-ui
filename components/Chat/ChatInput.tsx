@@ -5,6 +5,7 @@ import {
   IconPlayerStop,
   IconRepeat,
   IconSend,
+  IconAlbum,
 } from '@tabler/icons-react';
 import {
   KeyboardEvent,
@@ -27,6 +28,7 @@ import HomeContext from '@/pages/api/home/home.context';
 import { PluginSelect } from './PluginSelect';
 import { PromptList } from './PromptList';
 import { VariableModal } from './VariableModal';
+import { toast } from 'react-hot-toast';
 
 interface Props {
   onSend: (message: Message, plugin: Plugin | null) => void;
@@ -86,7 +88,13 @@ export const ChatInput = ({
     setContent(value);
     updatePromptListVisibility(value);
   };
+  const handleSave = () => {
+    // ! TODO: Add API Call to save prompt and add it to current user
+    // ! TODO: Add additional logic related to private/public prompt switch 
+    // Show popup with input containing prompt, switcher public/private and button
+    toast.success("Prompt Saved")
 
+  }
   const handleSend = () => {
     if (messageIsStreaming) {
       return;
@@ -337,6 +345,12 @@ export const ChatInput = ({
 
           <button
             className="absolute right-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
+            onClick={handleSave}
+          >
+              <IconAlbum size={18} />
+          </button>
+          <button
+            className="absolute right-8 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
             onClick={handleSend}
           >
             {messageIsStreaming ? (
@@ -345,7 +359,6 @@ export const ChatInput = ({
               <IconSend size={18} />
             )}
           </button>
-
           {showScrollDownButton && (
             <div className="absolute bottom-12 right-0 lg:bottom-0 lg:-right-10">
               <button
