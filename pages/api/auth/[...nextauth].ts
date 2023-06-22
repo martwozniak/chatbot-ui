@@ -21,4 +21,25 @@ export default NextAuth({
         }),
         // ...add more providers here
     ],
+    callbacks: {
+        async jwt({ token, account, user }) {
+          if (account) {
+            token.accessToken = account.access_token
+            token.id = user?.id
+          }
+          return token
+        },
+        async session({ session, user, token }) {
+            // I skipped the line below coz it gave me a TypeError
+            //session.accessToken = token.accessToken;
+            session = {
+                ...session,
+                user: {
+                    id: user.id,
+                    ...session.user
+                }
+            }
+            return session
+          },
+      }      
 })

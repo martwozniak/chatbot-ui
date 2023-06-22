@@ -30,6 +30,7 @@ import { PromptList } from './PromptList';
 import { VariableModal } from './VariableModal';
 import { toast } from 'react-hot-toast';
 import { useSession } from 'next-auth/react';
+import { useFetch } from '@/hooks/useFetch';
 
 interface Props {
   onSend: (message: Message, plugin: Plugin | null) => void;
@@ -38,6 +39,10 @@ interface Props {
   stopConversationRef: MutableRefObject<boolean>;
   textareaRef: MutableRefObject<HTMLTextAreaElement | null>;
   showScrollDownButton: boolean;
+}
+interface PromptRequest {
+  id: string
+  prompt: string
 }
 
 export const ChatInput = ({
@@ -90,7 +95,7 @@ export const ChatInput = ({
     setContent(value);
     updatePromptListVisibility(value);
   };
-  const handleSave = () => {
+  const handleSave = async () => {
     // ! TODO: Add API Call to save prompt and add it to current user
     // ! TODO: Add additional logic related to private/public prompt switch 
     // Show popup with input containing prompt, switcher public/private and button
@@ -105,9 +110,25 @@ export const ChatInput = ({
       toast.error(`Please enter a message`)
       return;
     }
-    toast.success(`Prompt: "${content}" saved`)
+    //const result = useFetch().post<PromptRequest>("/api/prompts/create");
     try {
-      // API Call
+      const postData : PromptRequest = {
+        id: session?.user?.id as string,
+        prompt: content,
+      };
+
+      const fetcher = useFetch();
+      const response = await fetch("http://127.0.0.1:3000/api/prompts/create",
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(postData),
+      });
+    
+      console.log(response)
+      toast.success(`Prompt: "${content}" saved`)
     }
     catch (e) {
       toast.error(`${e}`);
