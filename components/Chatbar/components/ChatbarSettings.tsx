@@ -14,11 +14,13 @@ import ChatbarContext from '../Chatbar.context';
 import { ClearConversations } from './ClearConversations';
 import { PluginKeys } from './PluginKeys';
 import { MarketplaceDialog } from '@/components/Settings/MarketplaceDialog';
+import { useSession } from 'next-auth/react';
 
 export const ChatbarSettings = () => {
   const { t } = useTranslation('sidebar');
   const [isSettingDialogOpen, setIsSettingDialog] = useState<boolean>(false);
   const [isMarketplaceDialogOpen, setIsMarketplaceDialogOpen] = useState<boolean>(false);
+  const { data: session } = useSession()
 
   const {
     state: {
@@ -51,12 +53,14 @@ export const ChatbarSettings = () => {
         icon={<IconFileExport size={18} />}
         onClick={() => handleExportData()}
       />
-      
-      <SidebarButton
+      {
+        session ? 
+        <SidebarButton
         text={t('Marketplace')}
         icon={<IconBuildingStore size={18} />}
         onClick={() => setIsMarketplaceDialogOpen(true)}
-      />
+      /> : <></>
+      }
 
       <SidebarButton
         text={t('Settings')}
