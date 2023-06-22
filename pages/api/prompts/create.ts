@@ -4,16 +4,22 @@ import { NextApiRequest, NextApiResponse } from "next/types"
 const prisma = new PrismaClient()
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-    //const prompts = await prisma.prompt.findMany()
+    
     const {id} = req.query;
-    // const result = await prisma.prompt.create({
-    //     data: {
-    //       prompt: "Jollof Rice",
-    //       ownerId: '1'
-    //     },
-    //   });
-    console.log(id)
-    res.status(200).json(id)
-}
-   
+    const {prompt} = req.query;
+
+    if(!id || !prompt || prompt === undefined || id === undefined || id === null || prompt === null){
+        res.status(404);
+    }
+
+    const result = await prisma.prompt.create({
+        data: {
+          prompt: prompt as string,
+          ownerId: id as string,
+        },
+      });
+    console.log(id,prompt)
+    res.status(200).json({id,prompt})
+}  
+
 export default handler

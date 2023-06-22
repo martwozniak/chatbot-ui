@@ -29,6 +29,7 @@ import { PluginSelect } from './PluginSelect';
 import { PromptList } from './PromptList';
 import { VariableModal } from './VariableModal';
 import { toast } from 'react-hot-toast';
+import { useSession } from 'next-auth/react';
 
 interface Props {
   onSend: (message: Message, plugin: Plugin | null) => void;
@@ -64,6 +65,7 @@ export const ChatInput = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [showPluginSelect, setShowPluginSelect] = useState(false);
   const [plugin, setPlugin] = useState<Plugin | null>(null);
+  const { data: session } = useSession()
 
   const promptListRef = useRef<HTMLUListElement | null>(null);
 
@@ -92,8 +94,25 @@ export const ChatInput = ({
     // ! TODO: Add API Call to save prompt and add it to current user
     // ! TODO: Add additional logic related to private/public prompt switch 
     // Show popup with input containing prompt, switcher public/private and button
-    toast.success("Prompt Saved")
-
+    if(!session){
+      toast.error(`Log in, please`)
+      return;
+    }
+    if (messageIsStreaming) {
+      return;
+    }
+    if(!content){
+      toast.error(`Please enter a message`)
+      return;
+    }
+    toast.success(`Prompt: "${content}" saved`)
+    try {
+      // API Call
+    }
+    catch (e) {
+      toast.error(`${e}`);
+      // error handling 
+    }
   }
   const handleSend = () => {
     if (messageIsStreaming) {
@@ -349,6 +368,7 @@ export const ChatInput = ({
           >
               <IconBookmarks size={18} />
           </button>
+
           <button
             className="absolute right-8 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
             onClick={handleSend}
