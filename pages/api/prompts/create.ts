@@ -1,25 +1,36 @@
 import { PrismaClient } from "@prisma/client"
 import { NextApiRequest, NextApiResponse } from "next/types"
+import * as z from "zod";
 
 const prisma = new PrismaClient()
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     
-    const {id} = req.query;
-    const {prompt} = req.query;
+    const result = await saveData(req.body)
 
-    if(!id || !prompt || prompt === undefined || id === undefined || id === null || prompt === null){
-        res.status(404);
-    }
+    res.status(200).json(result);
+}  
 
+const AddNewPromptRequest = z.object({
+    id: z.string(),
+    prompt: z.string()
+});
+
+async function saveData(rawData : any) {
+   
+   try {
+    const data = AddNewPromptRequest.parse(rawData);
     const result = await prisma.prompt.create({
         data: {
-          prompt: prompt as string,
-          ownerId: id as string,
+          prompt: data.prompt,
+          ownerId: data.id,
         },
       });
-    console.log(id,prompt)
-    res.status(200).json({id,prompt})
-}  
+    return result;
+   } catch (e)
+   {
+    console.log(e);
+   }
+}
 
 export default handler

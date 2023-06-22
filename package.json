@@ -42,7 +42,8 @@
     "remark-gfm": "^3.0.1",
     "remark-math": "^5.1.1",
     "sqlite3": "^5.1.6",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "zod": "^3.21.4"
   },
   "devDependencies": {
     "@mozilla/readability": "^0.4.4",
