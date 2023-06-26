@@ -96,6 +96,10 @@ When deploying the application, the following environment variables can be set:
 | LOGIN_REQUIRED | false | Require auth to access the app |
 
 
+|DATABASE_URL| | Prisma database url (Postgres/Mongo/SQLite)
+
+| API_BASE_URL | https://api.openai.com | Backend API URL |
+
 If you do not provide an OpenAI API key with `OPENAI_API_KEY`, users will have to provide their own key.
 
 If you don't have an OpenAI API key, you can get one [here](https://platform.openai.com/account/api-keys).
