@@ -12,4 +12,5 @@ export interface Prompt {
 export interface PromptRequest {
   id: string
   prompt: string
+  isPublic?: boolean
 }

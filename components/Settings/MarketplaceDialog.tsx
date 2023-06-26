@@ -13,6 +13,7 @@ import { toast } from 'react-hot-toast';
 import { IconCopy } from '@tabler/icons-react';
 import { PromptRequest } from '@/types/prompt';
 import { GetServerSideProps } from 'next/types';
+import { useSession } from "next-auth/react"
 
 interface Props {
   open: boolean;
@@ -28,10 +29,15 @@ export const MarketplaceDialog: FC<Props> = ({ open, onClose }) => {
   const { dispatch: homeDispatch } = useContext(HomeContext);
   const modalRef = useRef<HTMLDivElement>(null);
   const [publicPrompts, setPublicPrompts] = useState<PromptRequest[]>();
+  const [privatePrompts, setPrivatePrompts] = useState<PromptRequest[]>();
+  const { data: session, status } = useSession()
+
   useEffect(() => {
     async function setPrompts() {
-        const prompts = await getData();
-        setPublicPrompts(prompts);
+        const privPrompts = await getPrivatePrompts(session?.user.id);
+        const pubPrompts = await getPublicPrompts();
+        setPrivatePrompts(privPrompts);
+        setPublicPrompts(pubPrompts);
     }
     setPrompts();
  }, [])
@@ -63,8 +69,8 @@ export const MarketplaceDialog: FC<Props> = ({ open, onClose }) => {
   if (!open) {
     return <></>;
   }
-  console.log("public prompts", publicPrompts)
-  console.log(publicPrompts)
+  console.log("private prompts", privatePrompts)
+  console.log(privatePrompts)
   // Render the dialog.
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -84,25 +90,46 @@ export const MarketplaceDialog: FC<Props> = ({ open, onClose }) => {
               {t('Marketplace')}
             </div>
 
-            <div className="text-sm font-bold mb-2 text-black dark:text-neutral-200">
-              {t('Private prompts')}
+            <div className="text-sm font-bold mb-2 text-black dark:text-neutral-200 flex justify-between">
+              {t('User prompts')}
+              <span>Public</span>
             </div>
-           
+           { privatePrompts?.map(prompt => (
+           <div className='flex gap-2 items-center' key={prompt.id}>
             <div className='w-full border px-2 py-1 rounded-md flex justify-between cursor-pointer my-2 items-center' onClick={() => {
-                console.log('Copy prompt & use prompt automatically')
+                navigator.clipboard.writeText(prompt.prompt)
                 toast.success("Copied to clipboard")
+                onClose();
             }}>
-                <span>Prompt name</span>
-                <div><IconCopy /></div>
+                <span>{prompt.prompt} {prompt.id}</span>
+                <IconCopy />
             </div>
+            
+            <div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input type="checkbox" value={prompt.id} className="sr-only peer" defaultChecked={prompt.isPublic ? true : false} onClick={()=>{
+                    let status = changePromptVisibility(prompt.id)
+                    console.log(status)
+                    console.log("Change prompt to public ", prompt.id)
+                  }}/>
+                  <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                </label>
+            </div>
+            </div>))}
 
             <div className="text-sm font-bold mb-2 text-black dark:text-neutral-200">
               {t('Public prompts')}
             </div>
             {
               publicPrompts?.map(prompt => (<div key={prompt.id}>
-                  <span>{prompt.id}</span>
-                  <span>{prompt.prompt}</span>
+                  <div className='w-full border px-2 py-1 rounded-md flex justify-between cursor-pointer my-2 items-center' onClick={() => {
+                      navigator.clipboard.writeText(prompt.prompt)
+                      toast.success("Copied to clipboard")
+                      onClose();
+                  }}>
+                      <span>{prompt.prompt} {prompt.id}</span>
+                      <div><IconCopy /></div>
+                  </div>
               </div>))
             }
 
@@ -115,7 +142,7 @@ export const MarketplaceDialog: FC<Props> = ({ open, onClose }) => {
                 onClose();
               }}
             >
-              {t('Save')}
+              {t('Close')}
             </button>
           </div>
         </div>
@@ -124,15 +151,45 @@ export const MarketplaceDialog: FC<Props> = ({ open, onClose }) => {
   );
 };
 
-async function getData() {
+async function getPublicPrompts() {
   const res = await fetch('http://127.0.0.1:3000/api/prompts/read/all')
-  // The return value is *not* serialized
-  // You can return Date, Map, Set, etc.
- 
-  // Recommendation: handle errors
+
   if (!res.ok) {
-    // This will activate the closest `error.js` Error Boundary
     throw new Error('Failed to fetch data')
+  }
+ 
+  return res.json()
+}
+
+async function getPrivatePrompts(ownerId : number) {
+  let data = { "ownerId": ownerId}
+  const res = await fetch('http://127.0.0.1:3000/api/prompts/read/private',{
+    body: JSON.stringify(data),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST'
+  })
+
+  if (!res.ok) {
+    throw new Error('Failed to fetch data')
+  }
+ 
+  return res.json()
+}
+
+async function changePromptVisibility(id: string){
+  let data = { "id": id}
+  const res = await fetch('http://127.0.0.1:3000/api/prompts/changePromptVisibility',{
+    body: JSON.stringify(data),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST'
+  })
+
+  if (!res.ok) {
+    throw new Error('Failed to update prompt')
   }
  
   return res.json()
