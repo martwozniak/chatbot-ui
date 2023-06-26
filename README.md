@@ -100,6 +100,8 @@ When deploying the application, the following environment variables can be set:
 
 
 >>>>>>> cc1e3023d0c956c622b5117ca33fab80b147fdbd
+| API_BASE_URL | https://api.openai.com | Backend API URL |
+
 If you do not provide an OpenAI API key with `OPENAI_API_KEY`, users will have to provide their own key.
 
 If you don't have an OpenAI API key, you can get one [here](https://platform.openai.com/account/api-keys).
