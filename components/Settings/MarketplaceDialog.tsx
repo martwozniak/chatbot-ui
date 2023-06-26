@@ -1,4 +1,4 @@
-import { FC, useContext, useEffect, useReducer, useRef } from 'react';
+import { FC, useContext, useEffect, useReducer, useRef, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
@@ -11,6 +11,8 @@ import { Settings } from '@/types/settings';
 import HomeContext from '@/pages/api/home/home.context';
 import { toast } from 'react-hot-toast';
 import { IconCopy } from '@tabler/icons-react';
+import { PromptRequest } from '@/types/prompt';
+import { GetServerSideProps } from 'next/types';
 
 interface Props {
   open: boolean;
@@ -25,7 +27,14 @@ export const MarketplaceDialog: FC<Props> = ({ open, onClose }) => {
   });
   const { dispatch: homeDispatch } = useContext(HomeContext);
   const modalRef = useRef<HTMLDivElement>(null);
-
+  const [publicPrompts, setPublicPrompts] = useState<PromptRequest[]>();
+  useEffect(() => {
+    async function setPrompts() {
+        const prompts = await getData();
+        setPublicPrompts(prompts);
+    }
+    setPrompts();
+ }, [])
   useEffect(() => {
     const handleMouseDown = (e: MouseEvent) => {
       if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
@@ -54,7 +63,8 @@ export const MarketplaceDialog: FC<Props> = ({ open, onClose }) => {
   if (!open) {
     return <></>;
   }
-
+  console.log("public prompts", publicPrompts)
+  console.log(publicPrompts)
   // Render the dialog.
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -89,6 +99,12 @@ export const MarketplaceDialog: FC<Props> = ({ open, onClose }) => {
             <div className="text-sm font-bold mb-2 text-black dark:text-neutral-200">
               {t('Public prompts')}
             </div>
+            {
+              publicPrompts?.map(prompt => (<div key={prompt.id}>
+                  <span>{prompt.id}</span>
+                  <span>{prompt.prompt}</span>
+              </div>))
+            }
 
 
             <button
@@ -107,3 +123,17 @@ export const MarketplaceDialog: FC<Props> = ({ open, onClose }) => {
     </div>
   );
 };
+
+async function getData() {
+  const res = await fetch('http://127.0.0.1:3000/api/prompts/read/all')
+  // The return value is *not* serialized
+  // You can return Date, Map, Set, etc.
+ 
+  // Recommendation: handle errors
+  if (!res.ok) {
+    // This will activate the closest `error.js` Error Boundary
+    throw new Error('Failed to fetch data')
+  }
+ 
+  return res.json()
+}

@@ -31,6 +31,7 @@ import { VariableModal } from './VariableModal';
 import { toast } from 'react-hot-toast';
 import { useSession } from 'next-auth/react';
 import { useFetch } from '@/hooks/useFetch';
+import { PromptRequest } from '@/types/prompt';
 
 interface Props {
   onSend: (message: Message, plugin: Plugin | null) => void;
@@ -39,10 +40,6 @@ interface Props {
   stopConversationRef: MutableRefObject<boolean>;
   textareaRef: MutableRefObject<HTMLTextAreaElement | null>;
   showScrollDownButton: boolean;
-}
-interface PromptRequest {
-  id: string
-  prompt: string
 }
 
 export const ChatInput = ({
