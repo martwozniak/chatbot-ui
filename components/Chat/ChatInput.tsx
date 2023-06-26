@@ -5,6 +5,7 @@ import {
   IconPlayerStop,
   IconRepeat,
   IconSend,
+  IconBookmarks,
 } from '@tabler/icons-react';
 import {
   KeyboardEvent,
@@ -27,6 +28,9 @@ import HomeContext from '@/pages/api/home/home.context';
 import { PluginSelect } from './PluginSelect';
 import { PromptList } from './PromptList';
 import { VariableModal } from './VariableModal';
+import { toast } from 'react-hot-toast';
+import { useSession } from 'next-auth/react';
+import { useFetch } from '@/hooks/useFetch';
 
 interface Props {
   onSend: (message: Message, plugin: Plugin | null) => void;
@@ -35,6 +39,10 @@ interface Props {
   stopConversationRef: MutableRefObject<boolean>;
   textareaRef: MutableRefObject<HTMLTextAreaElement | null>;
   showScrollDownButton: boolean;
+}
+interface PromptRequest {
+  id: string
+  prompt: string
 }
 
 export const ChatInput = ({
@@ -62,6 +70,7 @@ export const ChatInput = ({
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [showPluginSelect, setShowPluginSelect] = useState(false);
   const [plugin, setPlugin] = useState<Plugin | null>(null);
+  const { data: session } = useSession()
 
   const promptListRef = useRef<HTMLUListElement | null>(null);
 
@@ -86,7 +95,46 @@ export const ChatInput = ({
     setContent(value);
     updatePromptListVisibility(value);
   };
+  const handleSave = async () => {
+    // ! TODO: Add API Call to save prompt and add it to current user
+    // ! TODO: Add additional logic related to private/public prompt switch 
+    // Show popup with input containing prompt, switcher public/private and button
+    if(!session){
+      toast.error(`Log in, please`)
+      return;
+    }
+    if (messageIsStreaming) {
+      return;
+    }
+    if(!content){
+      toast.error(`Please enter a message`)
+      return;
+    }
+    //const result = useFetch().post<PromptRequest>("/api/prompts/create");
+    try {
+      const postData : PromptRequest = {
+        id: session?.user?.id as string,
+        prompt: content,
+      };
 
+      const fetcher = useFetch();
+      const response = await fetch("http://127.0.0.1:3000/api/prompts/create",
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(postData),
+      });
+    
+      console.log(response)
+      toast.success(`Prompt: "${content}" saved`)
+    }
+    catch (e) {
+      toast.error(`${e}`);
+      // error handling 
+    }
+  }
   const handleSend = () => {
     if (messageIsStreaming) {
       return;
@@ -285,7 +333,7 @@ export const ChatInput = ({
             onClick={() => setShowPluginSelect(!showPluginSelect)}
             onKeyDown={(e) => {}}
           >
-            {plugin ? <IconBrandGoogle size={20} /> : <IconBolt size={20} />}
+            {plugin ? <IconBrandGoogle size={20} /> : <IconBolt size={20} className='animate-pulse'/>}
           </button>
 
           {showPluginSelect && (
@@ -337,6 +385,13 @@ export const ChatInput = ({
 
           <button
             className="absolute right-2 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
+            onClick={handleSave}
+          >
+              <IconBookmarks size={18} />
+          </button>
+
+          <button
+            className="absolute right-8 top-2 rounded-sm p-1 text-neutral-800 opacity-60 hover:bg-neutral-200 hover:text-neutral-900 dark:bg-opacity-50 dark:text-neutral-100 dark:hover:text-neutral-200"
             onClick={handleSend}
           >
             {messageIsStreaming ? (
@@ -345,7 +400,6 @@ export const ChatInput = ({
               <IconSend size={18} />
             )}
           </button>
-
           {showScrollDownButton && (
             <div className="absolute bottom-12 right-0 lg:bottom-0 lg:-right-10">
               <button
