@@ -62,12 +62,13 @@ export const ChatInput = ({
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [showPromptList, setShowPromptList] = useState(false);
   const [activePromptIndex, setActivePromptIndex] = useState(0);
+  const [lastSavedPrompt, setLastSavedPrompt] = useState<string>();
   const [promptInputValue, setPromptInputValue] = useState('');
   const [variables, setVariables] = useState<string[]>([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [showPluginSelect, setShowPluginSelect] = useState(false);
   const [plugin, setPlugin] = useState<Plugin | null>(null);
-  const { data: session } = useSession()
+  const { data: session } = useSession();
 
   const promptListRef = useRef<HTMLUListElement | null>(null);
 
@@ -107,7 +108,12 @@ export const ChatInput = ({
       toast.error(`Please enter a message`)
       return;
     }
-    //const result = useFetch().post<PromptRequest>("/api/prompts/create");
+    if(content === lastSavedPrompt)
+    {
+      toast.error(`Same prompt has already been saved`)
+      return;
+    }
+
     try {
       const postData : PromptRequest = {
         id: session?.user?.id as string,
@@ -124,7 +130,7 @@ export const ChatInput = ({
         body: JSON.stringify(postData),
       });
     
-      console.log(response)
+      setLastSavedPrompt(content);
       toast.success(`Prompt: "${content}" saved`)
     }
     catch (e) {
@@ -141,6 +147,7 @@ export const ChatInput = ({
       alert(t('Please enter a message'));
       return;
     }
+    setLastSavedPrompt(content);
 
     onSend({ role: 'user', content }, plugin);
     setContent('');
