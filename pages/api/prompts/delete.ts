@@ -3,8 +3,16 @@ import { NextApiRequest, NextApiResponse } from "next/types"
 
 const prisma = new PrismaClient()
 
-const handler = (req: NextApiRequest, res: NextApiResponse) => {
-    res.status(200).json({ name: 'John Doe' })
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+    const { id } = req.body;
+
+    const deletedPrompt = await prisma.prompt.delete({
+        where: {
+            id: id,
+        },
+    });
+  
+    res.status(200).json(deletedPrompt)
 }
    
-export default handler  
+export default handler

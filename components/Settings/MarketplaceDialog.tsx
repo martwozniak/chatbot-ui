@@ -3,7 +3,7 @@ import { FC, useContext, useEffect, useReducer, useRef, useState } from 'react';
 import { useTranslation } from 'next-i18next';
 
 import { toast } from 'react-hot-toast';
-import { IconCopy } from '@tabler/icons-react';
+import { IconCopy, IconTrash } from '@tabler/icons-react';
 import { PromptRequest } from '@/types/prompt';
 import { useSession } from "next-auth/react"
 
@@ -75,7 +75,10 @@ export const MarketplaceDialog: FC<Props> = ({ open, onClose }) => {
 
             <div className="text-sm font-bold mb-2 text-black dark:text-neutral-200 flex justify-between">
               {t('User prompts')}
-              <span>Public</span>
+              <div className='flex gap-2'>
+                <span>Public</span>
+                <span>Delete</span>
+              </div>
             </div>
            { privatePrompts?.map(prompt => (
            <div className='flex gap-2 items-center' key={prompt.id}>
@@ -88,7 +91,8 @@ export const MarketplaceDialog: FC<Props> = ({ open, onClose }) => {
                 <IconCopy />
             </div>
             
-            <div>
+            <div className='flex gap-6 items-center justify-center'>
+                <div>
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input type="checkbox" value={prompt.id} className="sr-only peer" defaultChecked={prompt.isPublic ? true : false} onClick={()=>{
                     let status = changePromptVisibility(prompt.id)
@@ -97,6 +101,11 @@ export const MarketplaceDialog: FC<Props> = ({ open, onClose }) => {
                   }}/>
                   <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                 </label>
+                </div>
+                <div>
+                  <IconTrash className='cursor-pointer' 
+                  onClick={()=> { deletePrompt(prompt.id); onClose();}}/>
+                </div>
             </div>
             </div>))}
 
@@ -111,7 +120,9 @@ export const MarketplaceDialog: FC<Props> = ({ open, onClose }) => {
                       onClose();
                   }}>
                       <span>{prompt.prompt} {prompt.id}</span>
-                      <div><IconCopy /></div>
+                      <div>
+                        <IconCopy />
+                      </div>
                   </div>
               </div>))
             }
@@ -174,5 +185,22 @@ async function changePromptVisibility(id: string){
     throw new Error('Failed to update prompt')
   }
  
+  return res.json()
+}
+
+async function deletePrompt(id: string){
+  let data = { "id": id}
+  const res = await fetch('http://127.0.0.1:3000/api/prompts/delete',{
+    body: JSON.stringify(data),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    method: 'POST'
+  })
+
+  if (!res.ok) {
+    throw new Error('Failed to delete prompt')
+  }
+  toast.success("Prompt deleted");
   return res.json()
 }
