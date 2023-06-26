@@ -22,3 +22,6 @@ export const AZURE_DEPLOYMENT_ID =
   
 export const LOGIN_REQUIRED = 
   process.env.LOGIN_REQUIRED || 'false';
+
+export const API_BASE_URL = 
+  process.env.API_BASE_URL || 'https://api.openai.com';
