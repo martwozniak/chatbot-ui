@@ -2,17 +2,9 @@ import { FC, useContext, useEffect, useReducer, useRef, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
 
-import { useCreateReducer } from '@/hooks/useCreateReducer';
-
-import { getSettings, saveSettings } from '@/utils/app/settings';
-
-import { Settings } from '@/types/settings';
-
-import HomeContext from '@/pages/api/home/home.context';
 import { toast } from 'react-hot-toast';
 import { IconCopy } from '@tabler/icons-react';
 import { PromptRequest } from '@/types/prompt';
-import { GetServerSideProps } from 'next/types';
 import { useSession } from "next-auth/react"
 
 interface Props {
@@ -21,12 +13,8 @@ interface Props {
 }
 
 export const MarketplaceDialog: FC<Props> = ({ open, onClose }) => {
-  const { t } = useTranslation('settings');
-  const settings: Settings = getSettings();
-  const { state, dispatch } = useCreateReducer<Settings>({
-    initialState: settings,
-  });
-  const { dispatch: homeDispatch } = useContext(HomeContext);
+  const { t } = useTranslation('marketplace');
+
   const modalRef = useRef<HTMLDivElement>(null);
   const [publicPrompts, setPublicPrompts] = useState<PromptRequest[]>();
   const [privatePrompts, setPrivatePrompts] = useState<PromptRequest[]>();
@@ -40,7 +28,8 @@ export const MarketplaceDialog: FC<Props> = ({ open, onClose }) => {
         setPublicPrompts(pubPrompts);
     }
     setPrompts();
- }, [])
+ }, [onClose])
+
   useEffect(() => {
     const handleMouseDown = (e: MouseEvent) => {
       if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
@@ -60,17 +49,11 @@ export const MarketplaceDialog: FC<Props> = ({ open, onClose }) => {
     };
   }, [onClose]);
 
-  const handleSave = () => {
-    homeDispatch({ field: 'lightMode', value: state.theme });
-    saveSettings(state);
-  };
-
   // Render nothing if the dialog is not open.
   if (!open) {
     return <></>;
   }
-  console.log("private prompts", privatePrompts)
-  console.log(privatePrompts)
+
   // Render the dialog.
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
@@ -109,8 +92,8 @@ export const MarketplaceDialog: FC<Props> = ({ open, onClose }) => {
                 <label className="relative inline-flex items-center cursor-pointer">
                   <input type="checkbox" value={prompt.id} className="sr-only peer" defaultChecked={prompt.isPublic ? true : false} onClick={()=>{
                     let status = changePromptVisibility(prompt.id)
-                    console.log(status)
-                    console.log("Change prompt to public ", prompt.id)
+                    toast.success("Prompt visibility changed")
+                    onClose()
                   }}/>
                   <div className="w-9 h-5 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                 </label>
@@ -138,7 +121,6 @@ export const MarketplaceDialog: FC<Props> = ({ open, onClose }) => {
               type="button"
               className="w-full px-4 py-2 mt-6 border rounded-lg shadow border-neutral-500 text-neutral-900 hover:bg-neutral-100 focus:outline-none dark:border-neutral-800 dark:border-opacity-50 dark:bg-white dark:text-black dark:hover:bg-neutral-300"
               onClick={() => {
-                handleSave();
                 onClose();
               }}
             >
