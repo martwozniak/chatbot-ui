@@ -82,13 +82,17 @@ export const MarketplaceDialog: FC<Props> = ({ open, onClose }) => {
             </div>
            { privatePrompts?.map(prompt => (
            <div className='flex gap-2 items-center' key={prompt.id}>
-            <div className='w-full border px-2 py-1 rounded-md flex justify-between cursor-pointer my-2 items-center' onClick={() => {
+            <div className='w-full border px-2 py-1 rounded-md flex justify-between cursor-pointer my-2 items-center hover:bg-slate-900 transition-all' onClick={() => {
                 navigator.clipboard.writeText(prompt.prompt)
                 toast.success("Copied to clipboard")
                 onClose();
-            }}>
-                <span>{prompt.prompt} {prompt.id}</span>
+            }}> 
+              <div>
+                <span>{prompt.prompt}</span>
+              </div>
+              <div>
                 <IconCopy />
+              </div>
             </div>
             
             <div className='flex gap-6 items-center justify-center'>
@@ -114,12 +118,14 @@ export const MarketplaceDialog: FC<Props> = ({ open, onClose }) => {
             </div>
             {
               publicPrompts?.map(prompt => (<div key={prompt.id}>
-                  <div className='w-full border px-2 py-1 rounded-md flex justify-between cursor-pointer my-2 items-center' onClick={() => {
+                  <div className='w-full border px-2 py-1 rounded-md flex justify-between cursor-pointer my-2 items-center hover:bg-slate-900 transition-all' onClick={() => {
                       navigator.clipboard.writeText(prompt.prompt)
                       toast.success("Copied to clipboard")
                       onClose();
                   }}>
-                      <span>{prompt.prompt} {prompt.id}</span>
+                      <div>
+                          <span>{prompt.prompt}</span>
+                      </div>
                       <div>
                         <IconCopy />
                       </div>
