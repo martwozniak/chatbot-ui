@@ -16,7 +16,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 }
 
 const Owner = z.object({
-    id: z.string(),
+    ownerId: z.string(),
 });
 
 async function getPrivatePrompts(rawData : any) {
@@ -24,9 +24,10 @@ async function getPrivatePrompts(rawData : any) {
     try {
         const userPrompts = await prisma.prompt.findMany({
             where: {
-                ownerId: data.id,
+                ownerId: data.ownerId,
             },
           })
+        return userPrompts
     } catch(e)
     {
         console.log(e);

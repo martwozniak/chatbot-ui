@@ -39,6 +39,7 @@ async function changePromptVisibility(rawData : any) {
                 isPublic: changedStatus,
             }
           })
+        return selectedPrompt;
     } catch(e) 
     {
         console.log(e);

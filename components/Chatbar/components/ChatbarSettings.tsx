@@ -1,4 +1,4 @@
-import { IconFileExport, IconSettings } from '@tabler/icons-react';
+import { IconBuildingStore, IconFileExport, IconSettings } from '@tabler/icons-react';
 import { useContext, useState } from 'react';
 
 import { useTranslation } from 'next-i18next';
@@ -13,10 +13,14 @@ import { SidebarButton } from '../../Sidebar/SidebarButton';
 import ChatbarContext from '../Chatbar.context';
 import { ClearConversations } from './ClearConversations';
 import { PluginKeys } from './PluginKeys';
+import { useSession } from 'next-auth/react';
+import { MarketplaceDialog } from '@/components/Settings/MarketplaceDialog';
 
 export const ChatbarSettings = () => {
   const { t } = useTranslation('sidebar');
   const [isSettingDialogOpen, setIsSettingDialog] = useState<boolean>(false);
+  const [isMarketplaceDialogOpen, setIsMarketplaceDialogOpen] = useState<boolean>(false);
+  const { data: session } = useSession()
 
   const {
     state: {
@@ -49,7 +53,14 @@ export const ChatbarSettings = () => {
         icon={<IconFileExport size={18} />}
         onClick={() => handleExportData()}
       />
-
+      {
+        session ? 
+        <SidebarButton
+        text={t('Marketplace')}
+        icon={<IconBuildingStore size={18} />}
+        onClick={() => setIsMarketplaceDialogOpen(true)}
+      /> : <></>
+      }
       <SidebarButton
         text={t('Settings')}
         icon={<IconSettings size={18} />}
@@ -68,6 +79,12 @@ export const ChatbarSettings = () => {
           setIsSettingDialog(false);
         }}
       />
+      
+      <MarketplaceDialog
+        open={isMarketplaceDialogOpen}
+        onClose={()=> {
+        setIsMarketplaceDialogOpen(false);
+      }} />
     </div>
   );
 };
