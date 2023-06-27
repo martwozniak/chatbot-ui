@@ -15,12 +15,15 @@ import { ClearConversations } from './ClearConversations';
 import { PluginKeys } from './PluginKeys';
 import { useSession } from 'next-auth/react';
 import { MarketplaceDialog } from '@/components/Settings/MarketplaceDialog';
+import UserInfo from '@/components/User/UserInfo';
 
 export const ChatbarSettings = () => {
   const { t } = useTranslation('sidebar');
   const [isSettingDialogOpen, setIsSettingDialog] = useState<boolean>(false);
   const [isMarketplaceDialogOpen, setIsMarketplaceDialogOpen] = useState<boolean>(false);
   const { data: session } = useSession()
+  const email = session?.user?.email as string;
+  const avatar = session?.user?.image as string;
 
   const {
     state: {
@@ -42,6 +45,9 @@ export const ChatbarSettings = () => {
 
   return (
     <div className="flex flex-col items-center space-y-1 border-t border-white/20 pt-1 text-sm">
+      {
+        session ? <UserInfo email={email} avatar={avatar}/> : <></>
+      }
       {conversations.length > 0 ? (
         <ClearConversations onClearConversations={handleClearConversations} />
       ) : null}
