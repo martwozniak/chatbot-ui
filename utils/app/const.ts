@@ -22,3 +22,15 @@ export const AZURE_DEPLOYMENT_ID =
   
 export const LOGIN_REQUIRED = 
   process.env.LOGIN_REQUIRED || 'false';
+
+export const APP_NAME = 
+  process.env.APP_NAME || 'SumUp Azure OpenAI Chat UI';
+
+export const API_ENTRYPOINT = 
+  process.env.API_ENTRYPOINT || 'SumUp Azure OpenAI Chat UI';
+
+export const PRIVATE_API_ENTRYPOINT = 
+  process.env.PRIVATE_API_ENTRYPOINT || 'SumUp Azure OpenAI Chat UI';
+
+export const WORKSPACES_ENDPOINT = 
+  process.env.WORKSPACES_ENDPOINT || 'SumUp Azure OpenAI Chat UI';

@@ -30,7 +30,6 @@ import { PromptList } from './PromptList';
 import { VariableModal } from './VariableModal';
 import { toast } from 'react-hot-toast';
 import { useSession } from 'next-auth/react';
-import { useFetch } from '@/hooks/useFetch';
 import { PromptRequest } from '@/types/prompt';
 
 interface Props {
@@ -120,7 +119,6 @@ export const ChatInput = ({
         prompt: content,
       };
 
-      const fetcher = useFetch();
       const response = await fetch("http://127.0.0.1:3000/api/prompts/create",
       {
         method: 'POST',
