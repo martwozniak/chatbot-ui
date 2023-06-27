@@ -31,6 +31,7 @@ import { VariableModal } from './VariableModal';
 import { toast } from 'react-hot-toast';
 import { useSession } from 'next-auth/react';
 import { PromptRequest } from '@/types/prompt';
+import { API_ENTRYPOINT, PRIVATE_API_ENTRYPOINT } from '@/utils/app/const';
 
 interface Props {
   onSend: (message: Message, plugin: Plugin | null) => void;
@@ -93,9 +94,6 @@ export const ChatInput = ({
     updatePromptListVisibility(value);
   };
   const handleSave = async () => {
-    // ! TODO: Add API Call to save prompt and add it to current user
-    // ! TODO: Add additional logic related to private/public prompt switch 
-    // Show popup with input containing prompt, switcher public/private and button
     if(!session){
       toast.error(`Log in, please`)
       return;
@@ -118,8 +116,8 @@ export const ChatInput = ({
         id: session?.user?.id as string,
         prompt: content,
       };
-
-      const response = await fetch("http://127.0.0.1:3000/api/prompts/create",
+      const url = API_ENTRYPOINT + PRIVATE_API_ENTRYPOINT + 'create';
+      const response = await fetch(url,
       {
         method: 'POST',
         headers: {
@@ -133,7 +131,6 @@ export const ChatInput = ({
     }
     catch (e) {
       toast.error(`${e}`);
-      // error handling 
     }
   }
   const handleSend = () => {
