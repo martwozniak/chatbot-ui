@@ -9,7 +9,6 @@ const prisma = new PrismaClient();
 
 export default NextAuth({
     adapter: PrismaAdapter(prisma) as Adapter<boolean>,
-    // Configure one or more authentication providers
     providers: [
         GoogleProvider({
             clientId: process.env.GOOGLE_CLIENT_ID as string,
@@ -19,6 +18,24 @@ export default NextAuth({
             clientId: process.env.GITHUB_ID as string,
             clientSecret: process.env.GITHUB_SECRET as string,
         }),
-        // ...add more providers here
     ],
+    callbacks: {
+        async jwt({ token, account, user }) {
+          if (account) {
+            token.accessToken = account.access_token
+            token.id = user?.id
+          }
+          return token
+        },
+        async session({ session, user, token }) {
+            session = {
+                ...session,
+                user: {
+                    id: user.id,
+                    ...session.user
+                }
+            }
+            return session
+          },
+      }      
 })
