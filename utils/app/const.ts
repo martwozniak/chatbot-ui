@@ -27,10 +27,13 @@ export const APP_NAME =
   process.env.APP_NAME || 'SumUp Azure OpenAI Chat UI';
 
 export const API_ENTRYPOINT = 
-  process.env.API_ENTRYPOINT || 'SumUp Azure OpenAI Chat UI';
+  process.env.API_ENTRYPOINT || 'http://127.0.0.1:3000/api';
 
 export const PRIVATE_API_ENTRYPOINT = 
-  process.env.PRIVATE_API_ENTRYPOINT || 'SumUp Azure OpenAI Chat UI';
+  process.env.PRIVATE_API_ENTRYPOINT || 'private';
 
 export const WORKSPACES_ENDPOINT = 
   process.env.WORKSPACES_ENDPOINT || 'SumUp Azure OpenAI Chat UI';
+
+export const AUTH_ENDPOINT = 
+  process.env.WORKSPACES_ENDPOINT || 'auth';

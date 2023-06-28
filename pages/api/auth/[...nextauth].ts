@@ -4,8 +4,8 @@ import GithubProvider from "next-auth/providers/github"
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
 import { Adapter } from "next-auth/adapters";
-import { signJwtAccessToken } from "@/utils/lib/jwt";
 import { randomBytes, randomUUID } from "crypto";
+import { setTokenCookie } from "@/utils/app/tokenCookies";
 
 const prisma = new PrismaClient();
 
@@ -63,7 +63,7 @@ export default NextAuth({
           }
           return token
         },
-        async session({session,     token}) {
+        async session({session, token}) {
             session.user.id = token.id
             session.user.accessToken = token;
             return session 
