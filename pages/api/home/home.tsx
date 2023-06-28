@@ -61,7 +61,7 @@ const Home = ({
   const { getModelsError } = useErrorService();
   const [initialRender, setInitialRender] = useState<boolean>(true);
   const { data: session } = useSession()
-
+  console.log(session)
   const contextValue = useCreateReducer<HomeInitialState>({
     initialState,
   });

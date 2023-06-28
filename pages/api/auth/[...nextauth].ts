@@ -4,6 +4,7 @@ import GithubProvider from "next-auth/providers/github"
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
 import { Adapter } from "next-auth/adapters";
+import { signJwtAccessToken } from "@/utils/lib/jwt";
 
 const prisma = new PrismaClient();
 
@@ -18,9 +19,21 @@ export default NextAuth({
         GithubProvider({
             clientId: process.env.GITHUB_ID as string,
             clientSecret: process.env.GITHUB_SECRET as string,
-        }),
-        // ...add more providers here
+        })
+        
     ],
+    secret: process.env.SECRET,
+    session: {
+        strategy: 'jwt'
+    },    
+    jwt: {
+    // The maximum age of the NextAuth.js issued JWT in seconds.
+    // Defaults to `session.maxAge`.
+    maxAge: 60 * 60 * 24 * 30,
+    // You can define your own encode/decode functions for signing and encryption
+    //async encode() {},
+    //async decode() {},
+    },
     callbacks: {
         async jwt({ token, account, user }) {
           if (account) {
