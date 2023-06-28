@@ -42,7 +42,7 @@ import { HomeInitialState, initialState } from './home.state';
 import { v4 as uuidv4 } from 'uuid';
 import { useSession } from 'next-auth/react';
 import LoginPage from '@/pages/login';
-import { setTokenCookie } from '@/utils/app/tokenCookies';
+import { removeTokenCookie, setTokenCookie } from '@/utils/app/tokenCookies';
 
 interface Props {
   serverSideApiKeyIsSet: boolean;
@@ -354,7 +354,10 @@ const Home = ({
   ]);
   
   if (session) { console.log(session.user?.email)}
-  if (loginRequired === 'true' && !session) {return <LoginPage/>}
+  if (loginRequired === 'true' && !session) {
+    removeTokenCookie();
+    return <LoginPage/>
+  }
   if (loginRequired === 'true' && session) {
     setTokenCookie(session.user.accessToken.accessToken || "")
   }
