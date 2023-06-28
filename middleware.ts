@@ -8,8 +8,8 @@ export function middleware(request: NextRequest) {
         const response = NextResponse.next();
         return response;
     } else {
-        return NextResponse.json({error: 404},  {
-            status: 404,
+        return NextResponse.json({error: 401},  {
+            status: 401,
         });
     }
   }
