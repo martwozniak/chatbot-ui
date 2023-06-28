@@ -1,6 +1,6 @@
-import { API_ENTRYPOINT, AUTH_ENDPOINT, PRIVATE_API_ENTRYPOINT } from "./const";
+import { API_ENTRYPOINT, AUTH_ENDPOINT, PUBLIC_API_ENTRYPOINT } from "./const";
 
-const BASE_URL=`${API_ENTRYPOINT}/${PRIVATE_API_ENTRYPOINT}/${AUTH_ENDPOINT}`;
+const BASE_URL=`${API_ENTRYPOINT}/${PUBLIC_API_ENTRYPOINT}/${AUTH_ENDPOINT}`;
 
 export const setTokenCookie = (token: string) => {
     const url = `${BASE_URL}/login`;

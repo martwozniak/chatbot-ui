@@ -32,6 +32,9 @@ export const API_ENTRYPOINT =
 export const PRIVATE_API_ENTRYPOINT = 
   process.env.PRIVATE_API_ENTRYPOINT || 'private';
 
+export const PUBLIC_API_ENTRYPOINT = 
+  process.env.PUBLIC_API_ENTRYPOINT || 'public';
+
 export const WORKSPACES_ENDPOINT = 
   process.env.WORKSPACES_ENDPOINT || 'SumUp Azure OpenAI Chat UI';
 
