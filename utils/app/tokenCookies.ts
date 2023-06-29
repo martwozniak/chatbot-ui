@@ -12,6 +12,7 @@ export const setTokenCookie = (token: string) => {
     },
     body: JSON.stringify({ token }),
     });
+    setDefaultWorkspace("default");
 };
 
 export const removeTokenCookie = () => {
@@ -25,3 +26,15 @@ fetch(url, {
     body: JSON.stringify({}),
 });
 };
+
+export const setDefaultWorkspace = (workspace : string) => {
+    const url = `${BASE_URL}/defaultWorkspace`;
+
+    fetch(url, {
+        method: "post",
+        headers: {
+        "Content-Type": "application/json",
+        },
+        body: JSON.stringify({workspace}),
+    });
+}
