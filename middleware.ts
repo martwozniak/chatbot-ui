@@ -5,7 +5,7 @@ export { default } from "next-auth/middleware"
 
 export function middleware(request: NextRequest) {
 
-    if((request.nextUrl.searchParams.get('workspace') || request.cookies.has('workspace')) && request.cookies.has('token')){
+    if((request.nextUrl.searchParams.has('workspace') || request.cookies.has('workspace')) && (request.cookies.has('token') || request.nextUrl.searchParams.has('token'))){
         const response = NextResponse.next();
         return response;
     } else {
