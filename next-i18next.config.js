@@ -1,4 +1,5 @@
 module.exports = {
+  runtime: 'edge',
   i18n: {
     defaultLocale: 'en',
     locales: [

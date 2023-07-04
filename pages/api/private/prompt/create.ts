@@ -4,6 +4,10 @@ import * as z from "zod";
 
 const prisma = new PrismaClient()
 
+export const config = {
+    runtime: 'edge',
+};
+
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
         const result = await saveData(req.body)

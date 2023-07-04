@@ -1,6 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import cookie from "cookie";
 
+export const config = {
+  runtime: 'edge',
+};
+
 export default (req: NextApiRequest, res: NextApiResponse) => {
   res.setHeader(
     "Set-Cookie",

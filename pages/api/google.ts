@@ -10,6 +10,10 @@ import { Readability } from '@mozilla/readability';
 import endent from 'endent';
 import jsdom, { JSDOM } from 'jsdom';
 
+export const config = {
+  runtime: 'edge',
+};
+
 const handler = async (req: NextApiRequest, res: NextApiResponse<any>) => {
   try {
     const { messages, key, model, googleAPIKey, googleCSEId } =

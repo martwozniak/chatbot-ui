@@ -8,6 +8,11 @@ import { FolderType } from '@/types/folder';
 
 import { HomeInitialState } from './home.state';
 
+export const config = {
+  runtime: 'edge',
+};
+
+
 export interface HomeContextProps {
   state: HomeInitialState;
   dispatch: Dispatch<ActionType<HomeInitialState>>;

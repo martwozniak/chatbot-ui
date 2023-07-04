@@ -3,6 +3,10 @@ import { NextApiRequest, NextApiResponse } from "next/types"
 
 const prisma = new PrismaClient();
 
+export const config = {
+    runtime: 'edge',
+};
+
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
         const prompts = await prisma.prompt.findMany({

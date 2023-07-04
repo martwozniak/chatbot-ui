@@ -6,6 +6,10 @@ interface Workspace {
     logo: string;
 }
 
+export const config = {
+    runtime: 'edge',
+};
+
 const handler = (req: NextApiRequest, res: NextApiResponse) => {
     
     const workspaces: Workspace[] = [

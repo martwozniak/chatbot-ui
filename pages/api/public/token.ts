@@ -4,6 +4,10 @@ const secret = process.env.NEXTAUTH_SECRET;
 import { API_ENTRYPOINT, PRIVATE_API_ENTRYPOINT, WORKSPACES_ENDPOINT } from "@/utils/app/const"
 import { NextApiRequest, NextApiResponse } from "next/types"
 
+export const config = {
+  runtime: 'edge',
+};
+
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     const token = await getToken({ req: req, secret: secret });
   if (token) {

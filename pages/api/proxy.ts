@@ -1,6 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { API_BASE_URL } from '@/utils/app/const';
 
+export const config = {
+  runtime: 'edge',
+};
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const { query, context } = req.body;
 

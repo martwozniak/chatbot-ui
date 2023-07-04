@@ -52,6 +52,10 @@ interface Props {
   loginRequired: string;
 }
 
+export const config = {
+  runtime: 'edge',
+};
+
 const Home = ({
   serverSideApiKeyIsSet,
   serverSidePluginKeysSet,

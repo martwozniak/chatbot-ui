@@ -8,6 +8,10 @@ import { randomBytes, randomUUID } from "crypto";
 
 const prisma = new PrismaClient();
 
+export const config = {
+  runtime: 'edge',
+};
+
 export default NextAuth({
     adapter: PrismaAdapter(prisma) as Adapter<boolean>,
     // Configure one or more authentication providers

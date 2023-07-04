@@ -8,7 +8,7 @@ import i18nextConfig from '../next-i18next.config';
 type Props = DocumentProps & {
   // add custom document props
 };
-
+// When using next export i18n doesnt work.
 export default function Document(props: Props) {
   const currentLocale =
     props.__NEXT_DATA__.locale ?? i18nextConfig.i18n.defaultLocale;

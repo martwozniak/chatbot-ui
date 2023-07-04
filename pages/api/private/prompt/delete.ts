@@ -4,6 +4,10 @@ import { z } from "zod";
 
 const prisma = new PrismaClient()
 
+export const config = {
+    runtime: 'edge',
+};
+
 const DeletePromptRequest = z.object({
     id: z.number()
 });
